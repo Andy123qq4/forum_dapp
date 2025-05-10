@@ -30,13 +30,13 @@ contract HKUSTForum {
     uint256 public postCount;
     // Comments: postId => commentId => Comment
     mapping(uint256 => mapping(uint256 => Comment)) public comments;
-    
+
     // ==================== Events ====================
     event PostCreated(uint256 indexed postId, address indexed author, string tag, string content);
     event TagChallenged(uint256 indexed postId, address indexed challenger);
     event VoteCast(uint256 indexed postId, address indexed voter, bool isRealVote);
     event CommentAdded(uint256 indexed postId, uint256 indexed commentId, address indexed author, string content, string tag);
-    
+
     // Add them for every redeployment
     // ==================== Constructor ====================
     constructor() {
@@ -110,13 +110,13 @@ contract HKUSTForum {
         // Create post #3 
         postCount++;
         Post storage post3 = posts[postCount];
-        post3.author = 0x4511277f98BA4282705Da1c250110E24Aa2f88a2; 
+        post3.author = 0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB; 
         post3.content = "The escalator outside CYT is broken again! Please fix it urgently!";
         post3.tag = "student";
         // May 10, 2025, 7:14:36 PM in Unix timestamp
         post3.timestamp = 1747098876; 
         post3.isTagChallenged = false;
-        post3.realVotes = 0;
+        post3.realVotes = 1;
         post3.fakerVotes = 0;
         post3.commentCount = 2;  // Updated to 2 comments
 
@@ -133,6 +133,7 @@ contract HKUSTForum {
         comment3_2.content = "Thank you to the staff for the quick response! This has been an ongoing issue.";
         comment3_2.tag = "professor";
         comment3_2.timestamp = 1746882408;
+        posts[postCount].hasVoted[comment3_2.author] = true;
 
         emit PostCreated(postCount, post3.author, post3.tag, post3.content);
         emit CommentAdded(postCount, 1, comment3.author, comment3.content, comment3.tag);
@@ -142,7 +143,7 @@ contract HKUSTForum {
         // Create post #4
         postCount++;
         Post storage post4 = posts[postCount];
-        post4.author = 0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB; 
+        post4.author = 0x4511277f98BA4282705Da1c250110E24Aa2f88a2; 
         post4.content = "When will LG1 open new meal options?";
         post4.tag = "staff";
         // May 15, 2025, 10:30:00 AM in Unix timestamp
@@ -155,9 +156,10 @@ contract HKUSTForum {
         // Add the first comment from student
         Comment storage comment4 = comments[postCount][1];
         comment4.author = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4;
-        comment4.content = "This person is not staff. I've seen them around campus as a student.";
+        comment4.content = "This person with id #45 is not staff. This guy tryiing to pretent both professor and stuff. I've seen them around campus as a student.";
         comment4.tag = "student";
         comment4.timestamp = 1746887700; // A timestamp shortly after the post
+        posts[postCount].hasVoted[comment4.author] = true;
 
         // Add the second comment from another student
         Comment storage comment4_2 = comments[postCount][2];
@@ -165,18 +167,68 @@ contract HKUSTForum {
         comment4_2.content = "I agree, definitely not staff. Voting fake on this one.";
         comment4_2.tag = "student";
         comment4_2.timestamp = 1746888800;
+        posts[postCount].hasVoted[comment4_2.author] = true;
         
         // Add the third comment from another student
         Comment storage comment4_3 = comments[postCount][3];
         comment4_3.author = 0xa983d7E14AC1aAf050bb64Fdab1024ae9c93c956;
-        comment4_3.content = "I know this person from my class. They're pretending to be staff!";
+        comment4_3.content = "I know this person from my class. They're pretending to be staff again!";
         comment4_3.tag = "student";
         comment4_3.timestamp = 1746889900;
+        posts[postCount].hasVoted[comment4_3.author] = true;
 
         emit PostCreated(postCount, post4.author, post4.tag, post4.content);
         emit CommentAdded(postCount, 1, comment4.author, comment4.content, comment4.tag);
         emit CommentAdded(postCount, 2, comment4_2.author, comment4_2.content, comment4_2.tag);
         emit CommentAdded(postCount, 3, comment4_3.author, comment4_3.content, comment4_3.tag);
+
+        // ==================== Post #5 (Controversial Topic - Equal Votes) ====================
+        postCount++; // Increment for Post #5
+        Post storage post5 = posts[postCount];
+        post5.author = 0x1111111111111111111111111111111111111111;
+        post5.content = "Proposal: University should prioritize STEM research funding significantly over Humanities to maintain our competitive edge and align with future job market demands. This is a pragmatic approach for long-term institutional success. #FutureSTEM";
+        post5.tag = "professor";
+        post5.timestamp = 1747053600; // May 12, 2025, 10:00:00 AM UTC
+        post5.isTagChallenged = true; // Tag is challenged due to having votes
+        post5.realVotes = 2;
+        post5.fakerVotes = 2;
+        post5.commentCount = 2;
+
+        // Record voters for Post #5
+        posts[postCount].hasVoted[0x2222222222222222222222222222222222222222] = true; // Voted Real
+        posts[postCount].hasVoted[0x3333333333333333333333333333333333333333] = true; // Voted Fake
+        posts[postCount].hasVoted[0x4444444444444444444444444444444444444444] = true; // Voted Real
+        posts[postCount].hasVoted[0x5555555555555555555555555555555555555555] = true; // Voted Fake
+
+        // Add first comment for Post #5
+        Comment storage comment5_1 = comments[postCount][1];
+        comment5_1.author = 0x6666666666666666666666666666666666666666;
+        comment5_1.content = "As a student, I see the practical benefits of focusing on STEM for job prospects, but we shouldn't completely defund humanities. They teach critical thinking.";
+        comment5_1.tag = "student";
+        comment5_1.timestamp = 1747053700;
+
+        // Add second comment for Post #5
+        Comment storage comment5_2 = comments[postCount][2];
+        comment5_2.author = 0x7777777777777777777777777777777777777777;
+        comment5_2.content = "Framing this as a 'Professor' view is a bit disingenuous. Many faculty believe in a balanced approach. The issue is more nuanced than presented here.";
+        comment5_2.tag = "professor";
+        comment5_2.timestamp = 1747053800;
+
+        emit PostCreated(postCount, post5.author, post5.tag, post5.content);
+        // Emit VoteCast events for each vote on Post #5 to be more accurate
+        // (Assuming the voteOnTag function would emit these. For constructor, we're setting state directly)
+        // For simplicity in constructor, we're not emitting individual VoteCast events here,
+        // but in a real scenario, each of those votes would have gone through voteOnTag.
+        // The TagChallenged event for Post #5 would have been emitted on the first vote.
+        // Let's assume the first voter (0x222...) was the one who triggered TagChallenged.
+        emit TagChallenged(postCount, 0x2222222222222222222222222222222222222222);
+        emit VoteCast(postCount, 0x2222222222222222222222222222222222222222, true);  // Real
+        emit VoteCast(postCount, 0x3333333333333333333333333333333333333333, false); // Fake
+        emit VoteCast(postCount, 0x4444444444444444444444444444444444444444, true);  // Real
+        emit VoteCast(postCount, 0x5555555555555555555555555555555555555555, false); // Fake
+
+        emit CommentAdded(postCount, 1, comment5_1.author, comment5_1.content, comment5_1.tag);
+        emit CommentAdded(postCount, 2, comment5_2.author, comment5_2.content, comment5_2.tag);
     }
     
     // ==================== Internal Functions ====================
@@ -318,22 +370,18 @@ contract HKUSTForum {
     
     // ==================== Tag Challenge Functions ====================
     // Merge challengeTag and vote functions
-    function challengeAndVote(uint256 _postId, bool _isRealVote) external {
+    function voteOnTag(uint256 _postId, bool _isRealVote) external {
         require(_postId > 0 && _postId <= postCount, "Invalid post ID");
         Post storage post = posts[_postId];
         
-        // Check if the tag is already challenged
-        if (!post.isTagChallenged) {
-            // This is a new challenge
-            require(post.author != msg.sender, "Cannot challenge your own post");
-            
-            post.isTagChallenged = true;
-            emit TagChallenged(_postId, msg.sender);
-        }
-        
-        // Now proceed with the vote
-        require(!post.hasVoted[msg.sender], "Already voted");
         require(post.author != msg.sender, "Cannot vote on your own post");
+        require(!post.hasVoted[msg.sender], "Already voted");
+
+        // If this is the first vote, mark the tag as challenged
+        if (!post.isTagChallenged) {
+            post.isTagChallenged = true;
+            emit TagChallenged(_postId, msg.sender); // msg.sender is the first voter/challenger
+        }
         
         post.hasVoted[msg.sender] = true;
         
@@ -341,14 +389,11 @@ contract HKUSTForum {
             post.realVotes++;
         } else {
             post.fakerVotes++;
-            
-            // Removed automatic invalidation based on threshold
-            // Now invalidation would need to be done manually by admin or through separate process
         }
         
         emit VoteCast(_postId, msg.sender, _isRealVote);
     }
-
+    
     // ==================== Post Data Functions ====================
     // View functions to get post data (since we can't return structs with mappings)
     function getPost(uint256 _postId) external view returns (
