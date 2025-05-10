@@ -1,0 +1,40 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "/Users/tsugumi/Developer/COMP4541/hkust-forum/forum_dapp/contracts/forum.sol": {
+      "lastModificationDate": 1746891454035,
+      "contentHash": "b990bced86c6c67687ec71246c2c4503",
+      "sourceName": "contracts/forum.sol",
+      "solcConfig": {
+        "version": "0.8.19",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.19"
+      ],
+      "artifacts": [
+        "HKUSTForum"
+      ]
+    }
+  }
+}
